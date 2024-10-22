@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import entity.Entity;
 import entity.Player;
+import object.ObjectGame;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable{
@@ -33,8 +34,10 @@ public class GamePanel extends JPanel implements Runnable{
 	private Thread game_Thread;
 	private KeyHandler keyH = new KeyHandler();
 	private Player player = new Player(keyH, this);
-	private TileManager tile_manager = new TileManager(player);
+	private TileManager tile_manager = new TileManager(this);
+	private AssetSetter asset_setter = new AssetSetter(this);
 	private CollisionChecker collision_checker = new CollisionChecker(this);
+	public ObjectGame object_game[] = new ObjectGame[10];
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -42,7 +45,12 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setDoubleBuffered(true);
 		this.addKeyListener(keyH);
 		this.setFocusable(true);
+		setupGame();
 		startGameThread();
+	}
+	
+	public Player getPlayer() {
+		return player;
 	}
 	public TileManager getTile_manager() {
 		return tile_manager;
@@ -54,6 +62,10 @@ public class GamePanel extends JPanel implements Runnable{
 	public void startGameThread() {
 		game_Thread = new Thread(this);
 		game_Thread.start();
+	}
+	
+	public void setupGame() {
+		asset_setter.setObject();
 	}
 	
 	@Override
@@ -88,6 +100,11 @@ public class GamePanel extends JPanel implements Runnable{
 		super.paintComponent(g);
 		Graphics2D graphics2d = (Graphics2D)g;
 		tile_manager.draw(graphics2d);
+		for(int i = 0; i < object_game.length; i++) {
+			if(object_game[i] != null) {
+				object_game[i].draw(graphics2d, this);
+			}
+		}
 		player.draw(graphics2d);
 		graphics2d.dispose();
 	}

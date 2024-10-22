@@ -14,12 +14,12 @@ import app.GamePanel;
 import entity.Player;
 
 public class TileManager {
-	private Player player;
+	private GamePanel gamePanel;
 	private ArrayList<Tile> tiles = new ArrayList<Tile>();
 	private int mapTileNum[][];
 	
-	public TileManager(Player player) {
-		this.player = player;
+	public TileManager(GamePanel gamePanel) {
+		this.gamePanel = gamePanel;
 		mapTileNum = new int[GamePanel.MAXWORLD_COL][GamePanel.MAXWORLD_ROW];
 		getTileImages();
 		loadMap("fields0");
@@ -87,10 +87,10 @@ public class TileManager {
 	}
 	
 	private boolean tileDrawScreenLimit(int world_x, int world_y) {
-		return world_x + GamePanel.TILESIZE > player.getWorld_x() - player.getScreen_x() &&
-			   world_x - GamePanel.TILESIZE < player.getWorld_x() + player.getScreen_x() &&
-			   world_y + GamePanel.TILESIZE > player.getWorld_y() - player.getScreen_y() &&
-			   world_y - GamePanel.TILESIZE < player.getWorld_y() + player.getScreen_y();
+		return world_x + GamePanel.TILESIZE > gamePanel.getPlayer().getWorld_x() - gamePanel.getPlayer().getScreen_x() &&
+			   world_x - GamePanel.TILESIZE < gamePanel.getPlayer().getWorld_x() + gamePanel.getPlayer().getScreen_x() &&
+			   world_y + GamePanel.TILESIZE > gamePanel.getPlayer().getWorld_y() - gamePanel.getPlayer().getScreen_y() &&
+			   world_y - GamePanel.TILESIZE < gamePanel.getPlayer().getWorld_y() + gamePanel.getPlayer().getScreen_y();
 	}
 	
 	public void draw(Graphics2D graphics2d) {
@@ -102,8 +102,8 @@ public class TileManager {
 			
 			int world_x = world_col * GamePanel.TILESIZE;
 			int world_y = world_row * GamePanel.TILESIZE;
-			int screen_x = world_x - player.getWorld_x() + player.getScreen_x();
-			int screen_y = world_y - player.getWorld_y() + player.getScreen_y();
+			int screen_x = world_x - gamePanel.getPlayer().getWorld_x() + gamePanel.getPlayer().getScreen_x();
+			int screen_y = world_y - gamePanel.getPlayer().getWorld_y() + gamePanel.getPlayer().getScreen_y();
 			
 			if(tileDrawScreenLimit(world_x, world_y)) {
 				graphics2d.drawImage(tiles.get(tileNum).getImage(), screen_x, screen_y, GamePanel.TILESIZE, GamePanel.TILESIZE, null);

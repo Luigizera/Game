@@ -15,6 +15,5 @@ public class Application {
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
-		
 	}
 }
