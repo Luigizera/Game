@@ -26,7 +26,7 @@ public class Entity {
 			return (byte)num;
 		}
 	}
-	protected int world_x, world_y;
+	protected int world_x = 0, world_y = 0;
 	protected byte speed = 4;
 	protected byte speed_current = 0;
 	protected BufferedImage sprite; 
@@ -37,31 +37,46 @@ public class Entity {
 	protected byte sprite_width = 0;
 	protected byte sprite_height = 0;
 	private byte sprite_width_count = 0;
-	protected Rectangle collision_area; //solidArea
+	protected Rectangle collision_area = new Rectangle(0, 0, GamePanel.TILESIZE, GamePanel.TILESIZE); //solidArea
+	protected int collision_default_x = 0, collision_default_y = 0;
 	protected boolean collision_on = false;
 	
 	
+	public Rectangle getCollision_area() {
+		return collision_area;
+	}
+	public int getCollision_default_x() {
+		return collision_default_x;
+	}
+	public int getCollision_default_y() {
+		return collision_default_y;
+	}
+	public void setCollision(int x, int y, int width, int height) {
+		if(width > GamePanel.TILESIZE || width <= -1) {
+			width = GamePanel.TILESIZE;
+		}
+		if(height > GamePanel.TILESIZE || height <= -1) {
+			height = GamePanel.TILESIZE;
+		}
+		collision_area = new Rectangle(x, y, width, height);
+		collision_default_x = x;
+		collision_default_y = y;
+	}
 	public void setCollision_on(boolean collision_on) {
 		this.collision_on = collision_on;
 	}
+	
+	public void setWorldLocation(int world_x, int world_y) {
+		this.world_x = world_x * GamePanel.TILESIZE;
+		this.world_y = world_y * GamePanel.TILESIZE;
+	}
+	
 	public byte getSpeed() {
 		return speed;
 	}
 	public byte getDirection() {
 		return direction;
 	}
-	
-	public Rectangle getCollision_area() {
-		return collision_area;
-	}
-	/*
-	public BufferedImage getSprite(BufferedImage sprite) {
-		if(sprite.getWidth() >= 32 && sprite.getHeight() >= 64 && sprite != null){
-			return sprite;
-		}
-		throw new IllegalArgumentException("Sprite sizes are incorrect (min: 32x64)");
-	}
-	*/
 	
 	public int getWorld_x() {
 		return world_x;
@@ -139,6 +154,12 @@ public class Entity {
 		}
 	}
 	/*
+	public BufferedImage getSprite(BufferedImage sprite) {
+		if(sprite.getWidth() >= 32 && sprite.getHeight() >= 64 && sprite != null){
+			return sprite;
+		}
+		throw new IllegalArgumentException("Sprite sizes are incorrect (min: 32x64)");
+	}
 	
 	public ArrayList<BufferedImage> getWalkDownAnimation() {
 		if(verifySprite()) {

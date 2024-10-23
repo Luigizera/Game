@@ -1,9 +1,7 @@
 package entity;
 
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-
 import app.GamePanel;
 import app.KeyHandler;
 
@@ -12,6 +10,7 @@ public class Player extends Entity {
 	KeyHandler keyH;
 	GamePanel gamePanel;
 	private final int screen_x, screen_y;
+	int key_count = 0;
 	
 	public Player(KeyHandler keyH, GamePanel gamePanel) {
 		this.keyH = keyH;
@@ -22,9 +21,8 @@ public class Player extends Entity {
 	}
 	
 	public void setDefaultValues() {
-		collision_area = new Rectangle(8, 16, 32, 32);
-		world_x = GamePanel.TILESIZE * 23;
-		world_y = GamePanel.TILESIZE * 21;
+		setCollision(12, 32, 26, 14);
+		setWorldLocation(23, 21);
 		setSprite("player");
 	}
 	
@@ -40,36 +38,6 @@ public class Player extends Entity {
 				this.keyH.key_downPressed ||
 				this.keyH.key_leftPressed ||
 				this.keyH.key_rightPressed;
-	}
-	
-	public void updateCollision() {
-		collision_on = false;
-		gamePanel.getCollision_checker().check(this);
-		
-		if(collision_on == false) {
-			switch (direction) {
-				case 0: {
-					world_y += speed;
-					speed_current = speed;
-					break;
-				}
-				case 1: {
-					world_x -= speed;
-					speed_current = speed;
-					break;
-				}
-				case 2: {
-					world_x += speed;
-					speed_current = speed;
-					break;
-				}
-				case 3: {
-					world_y -= speed;
-					speed_current = speed;
-					break;
-				}
-			}
-		}
 	}
 	
 	public void update() {
@@ -91,13 +59,64 @@ public class Player extends Entity {
 				
 			}
 			
-			updateCollision();
+			collision_on = false;
+			gamePanel.getCollision_checker().checkEntityCollision(this);
+			int obj_index = gamePanel.getCollision_checker().checkObject(this);
+			pickUpObject(obj_index);
+			
+			if(collision_on == false) {
+				switch (direction) {
+					case 0: {
+						world_y += speed;
+						speed_current = speed;
+						break;
+					}
+					case 1: {
+						world_x -= speed;
+						speed_current = speed;
+						break;
+					}
+					case 2: {
+						world_x += speed;
+						speed_current = speed;
+						break;
+					}
+					case 3: {
+						world_y -= speed;
+						speed_current = speed;
+						break;
+					}
+				}
+			}
 			
 			updateSprite();
 		}
 		updateSpeed();
 		
 	}
+	
+	public void pickUpObject(int index) {
+		if(index != -1) {
+			String obj_name = gamePanel.getObject_game()[index].getName();
+			switch (obj_name) {
+				case "Key": {
+					key_count++;	
+					gamePanel.getObject_game()[index] = null;
+					break;
+				}
+				case "Door": {
+					if(key_count > 0) {
+						gamePanel.getObject_game()[index] = null;
+						key_count--;
+					}
+					break;
+				}
+				default: {
+				}
+			}
+		}
+	}
+	
 	public void draw(Graphics2D graphics2d) {
 		
 		BufferedImage sprite_current = sprite_all.get(sprite_num);

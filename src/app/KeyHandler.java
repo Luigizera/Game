@@ -26,7 +26,6 @@ public class KeyHandler implements KeyListener{
 		if(key == KeyEvent.VK_D) {
 			key_rightPressed = true;
 		}
-		
 	}
 
 	@Override

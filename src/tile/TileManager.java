@@ -1,7 +1,7 @@
 package tile;
 
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 import app.GamePanel;
-import entity.Player;
 
 public class TileManager {
 	private GamePanel gamePanel;
@@ -44,12 +43,10 @@ public class TileManager {
 		InputStream is = getClass().getResourceAsStream("/tiles/tiles.txt");
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 			String line = br.readLine();
-			int lineNum = 0;
-            while (line != null)
+			while (line != null)
             {
             	String[] lineArray = line.split(" ");
             	tiles.add(new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/"+ lineArray[0] +".png")), Boolean.valueOf(lineArray[1])));
-                lineNum++;
                 line = br.readLine();
             }
             br.close();

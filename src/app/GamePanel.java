@@ -4,10 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-
 import javax.swing.JPanel;
-
-import entity.Entity;
 import entity.Player;
 import object.ObjectGame;
 import tile.TileManager;
@@ -37,7 +34,7 @@ public class GamePanel extends JPanel implements Runnable{
 	private TileManager tile_manager = new TileManager(this);
 	private AssetSetter asset_setter = new AssetSetter(this);
 	private CollisionChecker collision_checker = new CollisionChecker(this);
-	public ObjectGame object_game[] = new ObjectGame[10];
+	private ObjectGame object_game[] = new ObjectGame[10];
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -47,6 +44,10 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setFocusable(true);
 		setupGame();
 		startGameThread();
+	}
+	
+	public ObjectGame[] getObject_game() {
+		return object_game;
 	}
 	
 	public Player getPlayer() {
