@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.Graphics2D;
+
 import java.awt.image.BufferedImage;
 import app.GamePanel;
 import app.KeyHandler;
@@ -24,6 +25,10 @@ public class Player extends Entity {
 		setCollision(12, 32, 26, 14);
 		setWorldLocation(23, 21);
 		setSprite("player");
+	}
+	
+	public int getKey_count() {
+		return key_count;
 	}
 	
 	public int getScreen_x() {
@@ -100,18 +105,39 @@ public class Player extends Entity {
 			String obj_name = gamePanel.getObject_game()[index].getName();
 			switch (obj_name) {
 				case "Key": {
-					key_count++;	
+					key_count++;
 					gamePanel.getObject_game()[index] = null;
+					gamePanel.playSFX(2);
+					gamePanel.getGameUI().showMessage("You got a key!");
 					break;
 				}
 				case "Door": {
 					if(key_count > 0) {
 						gamePanel.getObject_game()[index] = null;
 						key_count--;
+						gamePanel.playSFX(1);
+						gamePanel.getGameUI().showMessage("You opened the door!");
+					}
+					else {
+						gamePanel.getGameUI().showMessage("You need a key!");
 					}
 					break;
 				}
+				case "Boots": {
+					gamePanel.getObject_game()[index] = null;
+					speed += 2;
+					gamePanel.playSFX(3);
+					gamePanel.getGameUI().showMessage("Speed up!");
+					break;
+				}
+				case "TreasureChest": {
+					gamePanel.getGameUI().setGame_finished(true);
+					gamePanel.stopMusic();
+					gamePanel.playSFX(3);
+					break;
+				}
 				default: {
+					break;
 				}
 			}
 		}

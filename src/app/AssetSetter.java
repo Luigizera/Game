@@ -1,5 +1,6 @@
 package app;
 
+import object.Object_Boots;
 import object.Object_Chest;
 import object.Object_Door;
 import object.Object_Key;
@@ -39,5 +40,9 @@ public class AssetSetter {
 		gamePanel.getObject_game()[6] = new Object_Chest();
 		gamePanel.getObject_game()[6].setWorld_x(8);
 		gamePanel.getObject_game()[6].setWorld_y(43);
+		
+		gamePanel.getObject_game()[7] = new Object_Boots();
+		gamePanel.getObject_game()[7].setWorld_x(26);
+		gamePanel.getObject_game()[7].setWorld_y(7);
 	}
 }

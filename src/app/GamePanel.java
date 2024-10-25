@@ -27,13 +27,17 @@ public class GamePanel extends JPanel implements Runnable{
 	public final static int WORLD_WIDTH = TILESIZE * MAXWORLD_COL;
 	public final static int WORLD_HEIGHT = TILESIZE * MAXWORLD_ROW;
 	
-	//OBJECTS SETTINGS
+	//SYSTEM
 	private Thread game_Thread;
 	private KeyHandler keyH = new KeyHandler();
-	private Player player = new Player(keyH, this);
 	private TileManager tile_manager = new TileManager(this);
 	private AssetSetter asset_setter = new AssetSetter(this);
 	private CollisionChecker collision_checker = new CollisionChecker(this);
+	private Sound music = new Sound();
+	private Sound sfx = new Sound();
+	private UI ui = new UI(this);
+	//Entity and Object
+	private Player player = new Player(keyH, this);
 	private ObjectGame object_game[] = new ObjectGame[10];
 	
 	public GamePanel() {
@@ -44,6 +48,18 @@ public class GamePanel extends JPanel implements Runnable{
 		this.setFocusable(true);
 		setupGame();
 		startGameThread();
+	}
+	public void setupGame() {
+		asset_setter.setObject();
+		playMusic(0);
+	}
+	public void startGameThread() {
+		game_Thread = new Thread(this);
+		game_Thread.start();
+	}
+	
+	public void stopGameThread() {
+		game_Thread = null;
 	}
 	
 	public ObjectGame[] getObject_game() {
@@ -57,16 +73,12 @@ public class GamePanel extends JPanel implements Runnable{
 		return tile_manager;
 	}
 	
-	public CollisionChecker getCollision_checker() {
-		return collision_checker;
-	}
-	public void startGameThread() {
-		game_Thread = new Thread(this);
-		game_Thread.start();
+	public UI getGameUI() {
+		return ui;
 	}
 	
-	public void setupGame() {
-		asset_setter.setObject();
+	public CollisionChecker getCollision_checker() {
+		return collision_checker;
 	}
 	
 	@Override
@@ -107,6 +119,22 @@ public class GamePanel extends JPanel implements Runnable{
 			}
 		}
 		player.draw(graphics2d);
+		ui.draw(graphics2d);
 		graphics2d.dispose();
+	}
+	
+	public void playMusic(int index) {
+		music.setFile(index);
+		music.play();
+		music.loop();
+	}
+	
+	public void stopMusic() {
+		music.stop();
+	}
+	
+	public void playSFX(int index) {
+		sfx.setFile(index);
+		sfx.play();
 	}
 }

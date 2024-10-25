@@ -1,0 +1,4 @@
+FanfareAdventure
+door
+key
+boots

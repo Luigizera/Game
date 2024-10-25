@@ -1,6 +1,0 @@
-grass false
-wall true
-water true
-smallrock false
-bigrock true
-tree true
