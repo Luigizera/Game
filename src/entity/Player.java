@@ -147,6 +147,6 @@ public class Player extends Entity {
 		
 		BufferedImage sprite_current = sprite_all.get(sprite_num);
 		
-		graphics2d.drawImage(sprite_current, screen_x, screen_y, GamePanel.TILESIZE, GamePanel.TILESIZE, null);
+		graphics2d.drawImage(sprite_current, screen_x, screen_y, null);
 	}
 }
