@@ -1,7 +1,7 @@
 package tile;
 
 import java.awt.Graphics2D;
-
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,8 +45,12 @@ public class TileManager {
 			String line = br.readLine();
 			while (line != null)
             {
-            	String[] lineArray = line.split(" ");
-            	tiles.add(new Tile(ImageIO.read(getClass().getResourceAsStream("/tiles/"+ lineArray[0] +".png")), Boolean.valueOf(lineArray[1])));
+				String[] lineArray = line.split(" ");
+				BufferedImage scaledSprite = new BufferedImage(GamePanel.TILESIZE, GamePanel.TILESIZE, ImageIO.read(getClass().getResourceAsStream("/tiles/"+ lineArray[0] +".png")).getType());
+				Graphics2D graphics2d = scaledSprite.createGraphics();
+				graphics2d.drawImage(ImageIO.read(getClass().getResourceAsStream("/tiles/"+ lineArray[0] +".png")), 0, 0, GamePanel.TILESIZE, GamePanel.TILESIZE, null);
+				graphics2d.dispose();
+            	tiles.add(new Tile(scaledSprite, Boolean.valueOf(lineArray[1])));
                 line = br.readLine();
             }
             br.close();
@@ -103,7 +107,7 @@ public class TileManager {
 			int screen_y = world_y - gamePanel.getPlayer().getWorld_y() + gamePanel.getPlayer().getScreen_y();
 			
 			if(tileDrawScreenLimit(world_x, world_y)) {
-				graphics2d.drawImage(tiles.get(tileNum).getImage(), screen_x, screen_y, GamePanel.TILESIZE, GamePanel.TILESIZE, null);
+				graphics2d.drawImage(tiles.get(tileNum).getImage(), screen_x, screen_y, null);
 			}
 			
 			world_col++;

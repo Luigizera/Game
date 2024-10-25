@@ -1,5 +1,7 @@
 package entity;
 
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -105,12 +107,16 @@ public class Entity {
 	
 	protected ArrayList<BufferedImage> getAllSprites() {
 		if(verifySprite()){
-			sprite_width = (byte)(sprite.getWidth() / 16);
-			sprite_height = (byte)(sprite.getHeight() / 16);
+			sprite_width = (byte)(sprite.getWidth() / GamePanel.TILESIZE_ORIGINAL);
+			sprite_height = (byte)(sprite.getHeight() / GamePanel.TILESIZE_ORIGINAL);
 			ArrayList<BufferedImage> all = new ArrayList<BufferedImage>();
-			for(int loop_y = 0; loop_y < sprite.getHeight(); loop_y += 16) {
-				for(int loop_x = 0; loop_x < sprite.getWidth(); loop_x += 16) {
-					all.add(sprite.getSubimage(loop_x, loop_y, GamePanel.TILESIZE_ORIGINAL, GamePanel.TILESIZE_ORIGINAL));
+			for(int loop_y = 0; loop_y < sprite.getHeight(); loop_y += GamePanel.TILESIZE_ORIGINAL) {
+				for(int loop_x = 0; loop_x < sprite.getWidth(); loop_x += GamePanel.TILESIZE_ORIGINAL) {
+					BufferedImage scaledSprite = new BufferedImage(GamePanel.TILESIZE, GamePanel.TILESIZE, BufferedImage.TYPE_INT_ARGB);
+					Graphics2D graphics2d = scaledSprite.createGraphics();
+					graphics2d.drawImage(sprite.getSubimage(loop_x, loop_y, GamePanel.TILESIZE_ORIGINAL, GamePanel.TILESIZE_ORIGINAL), 0, 0, GamePanel.TILESIZE, GamePanel.TILESIZE, null);
+					graphics2d.dispose();
+					all.add(scaledSprite);
 				}
 			}
 			return all;

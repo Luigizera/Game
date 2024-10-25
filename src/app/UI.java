@@ -75,9 +75,10 @@ public class UI {
 			
 			if(message_on == true) {
 				graphics2d.setFont(graphics2d.getFont().deriveFont(30F));
-				graphics2d.drawString(message, GamePanel.TILESIZE * 6, GamePanel.TILESIZE*5 - message_counter);
+				int textLength = (int) graphics2d.getFontMetrics().getStringBounds(message, graphics2d).getWidth();
+				graphics2d.drawString(message, GamePanel.SCREEN_WIDTH/2 - textLength/2, GamePanel.TILESIZE*5 - message_counter);
 				message_counter++;
-				if(message_counter > GamePanel.FPS * 2) {
+				if(message_counter > GamePanel.FPS) {
 					message_counter = 0;
 					message_on = false;
 				}
