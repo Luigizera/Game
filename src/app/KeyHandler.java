@@ -1,13 +1,23 @@
 package app;
 
 import java.awt.event.KeyEvent;
+
 import java.awt.event.KeyListener;
 
+import app.GamePanel.GameState;
+
 public class KeyHandler implements KeyListener{
-	
-	public boolean key_upPressed, key_downPressed, key_leftPressed, key_rightPressed;
+	GamePanel gamePanel;
+	public boolean key_upPressed = false, 
+			key_downPressed = false, 
+			key_leftPressed = false, 
+			key_rightPressed = false,
+			key_enterPressed = false;
 	private boolean checkDrawTime = false;
 
+	public KeyHandler(GamePanel gamePanel) {
+		this.gamePanel = gamePanel;
+	}
 	public boolean getCheckDrawTime() {
 		return checkDrawTime;
 	}
@@ -20,29 +30,70 @@ public class KeyHandler implements KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
-		if(key == KeyEvent.VK_W) {
-			key_upPressed = true;
-		}
-		if(key == KeyEvent.VK_S) {
-			key_downPressed = true;		
-		}
-		if(key == KeyEvent.VK_A) {
-			key_leftPressed = true;
-		}
-		if(key == KeyEvent.VK_D) {
-			key_rightPressed = true;
+		switch (gamePanel.getGame_state()) 
+		{
+			case PLAY: 
+			{
+				if(key == KeyEvent.VK_W) {
+					key_upPressed = true;
+				}
+				if(key == KeyEvent.VK_S) {
+					key_downPressed = true;		
+				}
+				if(key == KeyEvent.VK_A) {
+					key_leftPressed = true;
+				}
+				if(key == KeyEvent.VK_D) {
+					key_rightPressed = true;
+				}
+				if(key == KeyEvent.VK_ENTER) {
+					key_enterPressed = true;
+				}
+				
+				if(key == KeyEvent.VK_ESCAPE) 
+				{
+					gamePanel.setGame_state(GameState.PAUSE);
+				}
+				
+				//DEBUG
+				if(key == KeyEvent.VK_T) {
+					if(checkDrawTime) {
+						checkDrawTime = false;
+					}
+					else {
+						checkDrawTime = true;
+					}
+					
+				}
+				break;
+			}
+			case PAUSE: {
+				if(key == KeyEvent.VK_ESCAPE) 
+				{
+					switch (gamePanel.getGame_state()) 
+					{
+						case PLAY: {
+							gamePanel.setGame_state(GameState.PAUSE);
+							break;
+						}
+						case PAUSE: {
+							gamePanel.setGame_state(GameState.PLAY);
+							break;
+						}
+						default: {
+							gamePanel.setGame_state(GameState.PLAY);
+							break;
+						}
+					}
+				}
+			}
+			case DIALOGUE: {
+				if(key == KeyEvent.VK_ENTER) {
+					gamePanel.setGame_state(GameState.PLAY);
+				}
+			}
 		}
 		
-		//DEBUG
-		if(key == KeyEvent.VK_T) {
-			if(checkDrawTime) {
-				checkDrawTime = false;
-			}
-			else {
-				checkDrawTime = true;
-			}
-			
-		}
 	}
 	
 	

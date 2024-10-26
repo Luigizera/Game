@@ -1,6 +1,5 @@
 package entity;
 
-import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -12,7 +11,7 @@ import javax.imageio.ImageIO;
 import app.GamePanel;
 
 public class Entity {
-	protected enum Direction {
+	public enum Direction {
 		DOWN(0),
 		LEFT(1),
 		RIGHT(2),
@@ -28,6 +27,7 @@ public class Entity {
 			return (byte)num;
 		}
 	}
+	protected GamePanel gamePanel;
 	protected int world_x = 0, world_y = 0;
 	protected byte speed = 4;
 	protected byte speed_current = 0;
@@ -43,6 +43,9 @@ public class Entity {
 	protected int collision_default_x = 0, collision_default_y = 0;
 	protected boolean collision_on = false;
 	
+	public Entity(GamePanel gamePanel) {
+		this.gamePanel = gamePanel;
+	}
 	
 	public Rectangle getCollision_area() {
 		return collision_area;
@@ -89,7 +92,7 @@ public class Entity {
 	}
 
 	
-	protected void setSprite(String name) {
+	protected void setDefaultSprite(String name) {
 		try {
 			sprite = ImageIO.read(getClass().getResourceAsStream("/entity/" + name + ".png"));
 		} 
@@ -159,67 +162,6 @@ public class Entity {
 			speed_current = 0;
 		}
 	}
-	/*
-	public BufferedImage getSprite(BufferedImage sprite) {
-		if(sprite.getWidth() >= 32 && sprite.getHeight() >= 64 && sprite != null){
-			return sprite;
-		}
-		throw new IllegalArgumentException("Sprite sizes are incorrect (min: 32x64)");
-	}
 	
-	public ArrayList<BufferedImage> getWalkDownAnimation() {
-		if(verifySprite()) {
-			ArrayList<BufferedImage> list = new ArrayList<BufferedImage>();
-			for(int x = 0; x < sprite.getWidth(); x += 16) {
-				list.add(sprite.getSubimage(x, 0, GamePanel.TILESIZE_ORIGINAL, GamePanel.TILESIZE_ORIGINAL));
-			}
-			return list;
-		}
-		return new ArrayList<BufferedImage>();
-	}
 	
-	public ArrayList<BufferedImage> getWalkLeftAnimation() {
-		if(verifySprite()) {
-			ArrayList<BufferedImage> list = new ArrayList<BufferedImage>();
-			for(int x = 0; x < sprite.getWidth(); x += 16) {
-				list.add(sprite.getSubimage(x, 16, GamePanel.TILESIZE_ORIGINAL, GamePanel.TILESIZE_ORIGINAL));
-			}
-			return list;
-		}
-		return new ArrayList<BufferedImage>();
-	}
-	
-	public ArrayList<BufferedImage> getWalkRightAnimation() {
-		if(verifySprite()) {
-			ArrayList<BufferedImage> list = new ArrayList<BufferedImage>();
-			for(int x = 0; x < sprite.getWidth(); x += 16) {
-				list.add(sprite.getSubimage(x, 32, GamePanel.TILESIZE_ORIGINAL, GamePanel.TILESIZE_ORIGINAL));
-			}
-			return list;
-		}
-		return new ArrayList<BufferedImage>();
-	}
-	
-	public ArrayList<BufferedImage> getWalkUpAnimation() {
-		if(verifySprite()) {
-			ArrayList<BufferedImage> list = new ArrayList<BufferedImage>();
-			for(int x = 0; x < sprite.getWidth(); x += 16) {
-				list.add(sprite.getSubimage(x, 48, GamePanel.TILESIZE_ORIGINAL, GamePanel.TILESIZE_ORIGINAL));
-			}
-			return list;
-		}
-		return new ArrayList<BufferedImage>();
-	}
-	*/
-	/*
-	public void draw(Graphics2D graphics2d) {
-		BufferedImage sprite_current;
-		ArrayList<BufferedImage> sprites_walk_animation = getWalkAnimation();
-		sprite_current = sprites_walk_animation.get(sprite_num);
-		
-		
-		
-		graphics2d.drawImage(sprite_current, x, y, GamePanel.getTileSize(), GamePanel.getTileSize(), null);
-	}
-	*/
 }

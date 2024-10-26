@@ -94,7 +94,7 @@ public class CollisionChecker {
 								entity.setCollision_on(true);
 							}
 							if(entity.getClass() == Player.class) {
-								index = loop_i;
+								return loop_i;
 							}
 						}
 						break;
@@ -106,7 +106,7 @@ public class CollisionChecker {
 								entity.setCollision_on(true);
 							}
 							if(entity.getClass() == Player.class) {
-								index = loop_i;
+								return loop_i;
 							}
 						}
 						break;
@@ -118,7 +118,7 @@ public class CollisionChecker {
 								entity.setCollision_on(true);
 							}
 							if(entity.getClass() == Player.class) {
-								index = loop_i;
+								return loop_i;
 							}
 						}
 						break;
@@ -130,7 +130,7 @@ public class CollisionChecker {
 								entity.setCollision_on(true);
 							}
 							if(entity.getClass() == Player.class) {
-								index = loop_i;
+								return loop_i;
 							}
 						}
 						break;
@@ -144,6 +144,116 @@ public class CollisionChecker {
 		}
 		
 		return index;
+	}
+	
+	public int checkEntity(Entity entity, Entity[] target) {
+		int index = -1;
+		Rectangle entityCollision = new Rectangle(0, 0, 0, 0);
+		Rectangle targetCollision = new Rectangle(0, 0, 0, 0);
+		
+		for (int loop_i = 0; loop_i < target.length; loop_i++) {
+			if(target[loop_i] != null) {
+				entityCollision = entity.getCollision_area();
+				entityCollision.x += entity.getWorld_x();
+				entityCollision.y += entity.getWorld_y();
+				targetCollision = target[loop_i].getCollision_area();
+				targetCollision.x +=  target[loop_i].getWorld_x();
+				targetCollision.y +=  target[loop_i].getWorld_y();
+				
+				switch (entity.getDirection()) {
+					case 0: {
+						entityCollision.y += entity.getSpeed();
+						if(entityCollision.intersects(targetCollision)) {
+							entity.setCollision_on(true);
+							target[loop_i].setCollision_on(true);
+							index = loop_i;
+						}
+						break;
+					}
+					case 1: {
+						entityCollision.x -= entity.getSpeed();
+						if(entityCollision.intersects(targetCollision)) {
+							entity.setCollision_on(true);
+							target[loop_i].setCollision_on(true);
+							index = loop_i;
+						}
+						break;
+					}
+					case 2: {
+						entityCollision.x += entity.getSpeed();
+						if(entityCollision.intersects(targetCollision)) {
+							entity.setCollision_on(true);
+							target[loop_i].setCollision_on(true);
+							index = loop_i;
+						}
+						break;
+					}
+					case 3: {
+						entityCollision.y -= entity.getSpeed();
+						if(entityCollision.intersects(targetCollision)) {
+							entity.setCollision_on(true);
+							target[loop_i].setCollision_on(true);
+							index = loop_i;
+						}
+						break;
+					}
+				}
+				entityCollision.x = entity.getCollision_default_x();
+				entityCollision.y = entity.getCollision_default_y();
+				targetCollision.x = target[loop_i].getCollision_default_x();
+				targetCollision.y = target[loop_i].getCollision_default_y();
+			}
+		}
+		
+		return index;
+	}
+	
+	public void checkPlayer(Entity entity) {
+		
+		Rectangle entityCollision = new Rectangle(0, 0, 0, 0);
+		Rectangle targetCollision = new Rectangle(0, 0, 0, 0);
+		
+		entityCollision = entity.getCollision_area();
+		entityCollision.x += entity.getWorld_x();
+		entityCollision.y += entity.getWorld_y();
+		targetCollision = gamePanel.getPlayer().getCollision_area();
+		targetCollision.x +=  gamePanel.getPlayer().getWorld_x();
+		targetCollision.y +=  gamePanel.getPlayer().getWorld_y();
+		
+		switch (entity.getDirection()) {
+			case 0: {
+				entityCollision.y += entity.getSpeed();
+				if(entityCollision.intersects(targetCollision)) {
+					entity.setCollision_on(true);
+				}
+				break;
+			}
+			case 1: {
+				entityCollision.x -= entity.getSpeed();
+				if(entityCollision.intersects(targetCollision)) {
+					entity.setCollision_on(true);
+				}
+				break;
+			}
+			case 2: {
+				entityCollision.x += entity.getSpeed();
+				if(entityCollision.intersects(targetCollision)) {
+					entity.setCollision_on(true);
+				}
+				break;
+			}
+			case 3: {
+				entityCollision.y -= entity.getSpeed();
+				if(entityCollision.intersects(targetCollision)) {
+					entity.setCollision_on(true);
+				}
+				break;
+			}
+		}
+		entityCollision.x = entity.getCollision_default_x();
+		entityCollision.y = entity.getCollision_default_y();
+		targetCollision.x = gamePanel.getPlayer().getCollision_default_x();
+		targetCollision.y = gamePanel.getPlayer().getCollision_default_y();
 	}
 	
 }

@@ -4,18 +4,18 @@ import java.awt.Graphics2D;
 
 import java.awt.image.BufferedImage;
 import app.GamePanel;
+import app.GamePanel.GameState;
 import app.KeyHandler;
 
 public class Player extends Entity {
 
 	KeyHandler keyH;
-	GamePanel gamePanel;
 	private final int screen_x, screen_y;
 	int key_count = 0;
 	
 	public Player(KeyHandler keyH, GamePanel gamePanel) {
+		super(gamePanel);
 		this.keyH = keyH;
-		this.gamePanel = gamePanel;
 		screen_x = GamePanel.SCREEN_WIDTH/2 - GamePanel.TILESIZE/2;
 		screen_y = GamePanel.SCREEN_HEIGHT/2 - GamePanel.TILESIZE/2;
 		setDefaultValues();
@@ -24,7 +24,7 @@ public class Player extends Entity {
 	public void setDefaultValues() {
 		setCollision(12, 32, 26, 14);
 		setWorldLocation(23, 21);
-		setSprite("player");
+		setDefaultSprite("player");
 	}
 	
 	public int getKey_count() {
@@ -69,6 +69,9 @@ public class Player extends Entity {
 			int obj_index = gamePanel.getCollision_checker().checkObject(this);
 			pickUpObject(obj_index);
 			
+			int npc_index = gamePanel.getCollision_checker().checkEntity(this, gamePanel.getNPC());
+			interactNPC(npc_index);
+			
 			if(collision_on == false) {
 				switch (direction) {
 					case 0: {
@@ -102,51 +105,23 @@ public class Player extends Entity {
 	
 	public void pickUpObject(int index) {
 		if(index != -1) {
-			String obj_name = gamePanel.getObject_game()[index].getName();
-			switch (obj_name) {
-				case "Key": {
-					key_count++;
-					gamePanel.getObject_game()[index] = null;
-					gamePanel.playSFX(2);
-					gamePanel.getGameUI().showMessage("You got a key!");
-					break;
-				}
-				case "Door": {
-					if(key_count > 0) {
-						gamePanel.getObject_game()[index] = null;
-						key_count--;
-						gamePanel.playSFX(1);
-						gamePanel.getGameUI().showMessage("You opened the door!");
-					}
-					else {
-						gamePanel.getGameUI().showMessage("You need a key!");
-					}
-					break;
-				}
-				case "Boots": {
-					gamePanel.getObject_game()[index] = null;
-					speed += 2;
-					gamePanel.playSFX(3);
-					gamePanel.getGameUI().showMessage("Speed up!");
-					break;
-				}
-				case "TreasureChest": {
-					gamePanel.getGameUI().setGame_finished(true);
-					gamePanel.stopMusic();
-					gamePanel.playSFX(3);
-					break;
-				}
-				default: {
-					break;
-				}
+			
+		}
+	}
+	
+	public void interactNPC(int index) {
+		if(index != -1) {
+			if(this.keyH.key_enterPressed == true) {
+				gamePanel.setGame_state(GameState.DIALOGUE);
+				gamePanel.getNPC()[index].speak();
 			}
 		}
+		this.keyH.key_enterPressed = false;
 	}
 	
 	public void draw(Graphics2D graphics2d) {
 		
 		BufferedImage sprite_current = sprite_all.get(sprite_num);
-		
 		graphics2d.drawImage(sprite_current, screen_x, screen_y, null);
 	}
 }

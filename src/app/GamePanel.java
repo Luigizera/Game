@@ -1,15 +1,32 @@
 package app;
 
 import java.awt.Color;
+
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
+
+import entity.NPC;
 import entity.Player;
 import object.ObjectGame;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable{
+	public enum GameState {
+		PLAY(0),
+		PAUSE(1),
+		DIALOGUE(2);
+		
+		private int num;
+		private GameState(int num) {
+			this.num = num;
+		}
+		
+		protected byte getByte() {
+			return (byte)num;
+		}
+	}
 	private static final long serialVersionUID = 1L;
 	//SCREEN SETTINGS
 	public final static int TILESIZE_ORIGINAL = 16;
@@ -29,7 +46,7 @@ public class GamePanel extends JPanel implements Runnable{
 	
 	//SYSTEM
 	private Thread game_Thread;
-	private KeyHandler keyH = new KeyHandler();
+	private KeyHandler keyH = new KeyHandler(this);
 	private TileManager tile_manager = new TileManager(this);
 	private AssetSetter asset_setter = new AssetSetter(this);
 	private CollisionChecker collision_checker = new CollisionChecker(this);
@@ -39,6 +56,11 @@ public class GamePanel extends JPanel implements Runnable{
 	//Entity and Object
 	private Player player = new Player(keyH, this);
 	private ObjectGame object_game[] = new ObjectGame[10];
+	private NPC npc[] = new NPC[10];
+	
+	//Game State
+	private GameState game_state = GameState.PLAY;
+	
 	
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -51,7 +73,9 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	public void setupGame() {
 		asset_setter.setObject();
+		asset_setter.setNPC();
 		playMusic(0);
+		game_state = GameState.PLAY;
 	}
 	public void startGameThread() {
 		game_Thread = new Thread(this);
@@ -62,8 +86,20 @@ public class GamePanel extends JPanel implements Runnable{
 		game_Thread = null;
 	}
 	
+	public GameState getGame_state() {
+		return game_state;
+	}
+	
+	public void setGame_state(GameState game_state) {
+		this.game_state = game_state;
+	}
+	
 	public ObjectGame[] getObject_game() {
 		return object_game;
+	}
+	
+	public NPC[] getNPC() {
+		return npc;
 	}
 	
 	public Player getPlayer() {
@@ -106,7 +142,17 @@ public class GamePanel extends JPanel implements Runnable{
 	}
 	
 	public void update() {
-		player.update();
+		if(game_state == GameState.PLAY) {
+			for(int i = 0; i < npc.length; i++) {
+				if(npc[i] != null) {
+					npc[i].update();
+				}
+			}
+			player.update();
+		}
+		if(game_state == GameState.PAUSE) {
+			
+		}
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -118,6 +164,11 @@ public class GamePanel extends JPanel implements Runnable{
 		for(int i = 0; i < object_game.length; i++) {
 			if(object_game[i] != null) {
 				object_game[i].draw(graphics2d, this);
+			}
+		}
+		for(int i = 0; i < npc.length; i++) {
+			if(npc[i] != null) {
+				npc[i].draw(graphics2d);
 			}
 		}
 		player.draw(graphics2d);
