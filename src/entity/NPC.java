@@ -2,11 +2,9 @@ package entity;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-
 import app.GamePanel;
-import entity.Entity.Direction;
 
-public class NPC extends Entity{
+public abstract class NPC extends Entity{
 	protected int action_lock_counter = 0;
 	protected String dialogues[] = new String[20];
 	protected int dialogue_index = 0;
@@ -15,9 +13,7 @@ public class NPC extends Entity{
 		super(gamePanel);
 	}
 
-	public void setAction() {
-		
-	}
+	public abstract void setAction();
 	
 	public void speak() {
 		if(dialogues[dialogue_index] == null) {

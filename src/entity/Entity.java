@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 
 import app.GamePanel;
 
-public class Entity {
+public abstract class Entity {
 	public enum Direction {
 		DOWN(0),
 		LEFT(1),
@@ -108,7 +108,7 @@ public class Entity {
 			   sprite.getHeight() % 16 == 0;
 	}
 	
-	protected ArrayList<BufferedImage> getAllSprites() {
+	public ArrayList<BufferedImage> getAllSprites() {
 		if(verifySprite()){
 			sprite_width = (byte)(sprite.getWidth() / GamePanel.TILESIZE_ORIGINAL);
 			sprite_height = (byte)(sprite.getHeight() / GamePanel.TILESIZE_ORIGINAL);

@@ -14,9 +14,10 @@ import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable{
 	public enum GameState {
-		PLAY(0),
-		PAUSE(1),
-		DIALOGUE(2);
+		TITLE(0),
+		PLAY(1),
+		PAUSE(2),
+		DIALOGUE(3);
 		
 		private int num;
 		private GameState(int num) {
@@ -35,8 +36,8 @@ public class GamePanel extends JPanel implements Runnable{
 	public final static int MAXSCREEN_ROW = 12;
 	public final static int FPS = 60;
 	public final static int TILESIZE = TILESIZE_ORIGINAL * TILESIZE_SCALE;
-	public final static int SCREEN_WIDTH = (TILESIZE_ORIGINAL * TILESIZE_SCALE) * MAXSCREEN_COL; // 768 pixels
-	public final static int SCREEN_HEIGHT = (TILESIZE_ORIGINAL * TILESIZE_SCALE) * MAXSCREEN_ROW; // 576 pixels
+	public final static int SCREEN_WIDTH = TILESIZE * MAXSCREEN_COL; // 768 pixels
+	public final static int SCREEN_HEIGHT = TILESIZE * MAXSCREEN_ROW; // 576 pixels
 	
 	//WORLD SETTINGS
 	public final static int MAXWORLD_COL = 50;
@@ -74,8 +75,7 @@ public class GamePanel extends JPanel implements Runnable{
 	public void setupGame() {
 		asset_setter.setObject();
 		asset_setter.setNPC();
-		playMusic(0);
-		game_state = GameState.PLAY;
+		game_state = GameState.TITLE;
 	}
 	public void startGameThread() {
 		game_Thread = new Thread(this);
@@ -160,25 +160,35 @@ public class GamePanel extends JPanel implements Runnable{
 		long drawStart = System.nanoTime();
 		super.paintComponent(g);
 		Graphics2D graphics2d = (Graphics2D)g;
-		tile_manager.draw(graphics2d);
-		for(int i = 0; i < object_game.length; i++) {
-			if(object_game[i] != null) {
-				object_game[i].draw(graphics2d, this);
-			}
-		}
-		for(int i = 0; i < npc.length; i++) {
-			if(npc[i] != null) {
-				npc[i].draw(graphics2d);
-			}
-		}
-		player.draw(graphics2d);
+		
 		if(keyH.getCheckDrawTime()) {
 			long drawEnd = System.nanoTime();
 			graphics2d.setColor(Color.black);
 			graphics2d.drawString("Draw time: " + (drawEnd - drawStart), 10, 400);
 			System.out.println((drawEnd - drawStart));
 		}
-		ui.draw(graphics2d);
+		
+		if(game_state == GameState.TITLE) 
+		{
+			ui.draw(graphics2d);
+		}
+		else 
+		{
+			tile_manager.draw(graphics2d);
+			for(int i = 0; i < object_game.length; i++) {
+				if(object_game[i] != null) {
+					object_game[i].draw(graphics2d, this);
+				}
+			}
+			for(int i = 0; i < npc.length; i++) {
+				if(npc[i] != null) {
+					npc[i].draw(graphics2d);
+				}
+			}
+			player.draw(graphics2d);
+			ui.draw(graphics2d);
+		}
+		
 		
 		graphics2d.dispose();
 	}

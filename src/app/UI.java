@@ -3,8 +3,11 @@ package app;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.Format;
 
@@ -15,13 +18,40 @@ public class UI {
 	
 	private GamePanel gamePanel;
 	private Graphics2D graphics2d;
-	private static final Font ARIAL_40 = new Font("Arial", Font.PLAIN, 40), 
-							  ARIAL_80B = new Font("Arial", Font.BOLD, 80), 
-							  ARIAL_32 = new Font("Arial", Font.PLAIN, 32);
+	private Font font_default;
 	private String currentDialogue = "";
+	private int command_number = 0;
 	
 	public UI(GamePanel gamePanel) {
 		this.gamePanel = gamePanel;
+		try {
+			InputStream is = getClass().getResourceAsStream("/fonts/MP16OSF.ttf");
+			font_default = Font.createFont(Font.TRUETYPE_FONT, is);
+		} 
+		catch (FontFormatException e) {
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void decreaseCommand_number() {
+		this.command_number--;
+		if(command_number < 0) {
+			this.command_number = 2;
+		}
+	}
+	
+	public void addCommand_number() {
+		this.command_number++;
+		if(command_number > 2) {
+			this.command_number = 0;
+		}
+	}
+	
+	public int getCommand_number() {
+		return command_number;
 	}
 	
 	public void setCurrentDialogue(String currentDialogue) {
@@ -30,9 +60,12 @@ public class UI {
 	
 	public void draw(Graphics2D graphics2d) {
 		this.graphics2d = graphics2d;
-			graphics2d.setFont(ARIAL_40);
+			graphics2d.setFont(font_default);
 			graphics2d.setColor(Color.black);
 			switch (gamePanel.getGame_state()) {
+			case TITLE: {
+				drawTitleScreen();
+			}
 			case PLAY: {
 				
 				break;
@@ -50,9 +83,58 @@ public class UI {
 			}
 		}
 	}
+	private void drawTitleScreen() {
+		//BACKGROUND COLOR
+		graphics2d.setColor(new Color(127,127,127));
+		graphics2d.fillRect(0, 0, GamePanel.SCREEN_WIDTH, GamePanel.SCREEN_HEIGHT);
+		
+		//TITLE NAME
+		graphics2d.setFont(graphics2d.getFont().deriveFont(Font.BOLD, 96F));
+		String text = "Ludas Game";
+		int x = getCenterText_X(text);
+		int y = GamePanel.TILESIZE * 3;
+		
+		graphics2d.setColor(Color.black);
+		graphics2d.drawString(text, x+5, y+5);
+		graphics2d.setColor(Color.white);
+		graphics2d.drawString(text, x, y);
+		
+		//PLAYER IMG
+		x = GamePanel.SCREEN_WIDTH/2 - GamePanel.TILESIZE;
+		y += GamePanel.TILESIZE * 2;
+		graphics2d.drawImage(gamePanel.getPlayer().getAllSprites().get(0), x, y, GamePanel.TILESIZE*2, GamePanel.TILESIZE*2, null);
+		
+		
+		graphics2d.setFont(graphics2d.getFont().deriveFont(Font.BOLD, 48F));
+		text = "New Game";
+		x = getCenterText_X(text);
+		y += GamePanel.TILESIZE*4;
+		graphics2d.drawString(text, x, y);
+		if(command_number == 0) {
+			graphics2d.drawString(">", x - GamePanel.TILESIZE, y);
+		}
+		
+		text = "Load Game";
+		x = getCenterText_X(text);
+		y += GamePanel.TILESIZE;
+		graphics2d.drawString(text, x, y);
+		if(command_number == 1) {
+			graphics2d.drawString(">", x - GamePanel.TILESIZE, y);
+		}
+		
+		text = "Quit";
+		x = getCenterText_X(text);
+		y += GamePanel.TILESIZE;
+		graphics2d.drawString(text, x, y);
+		if(command_number == 2) {
+			graphics2d.drawString(">", x - GamePanel.TILESIZE, y);
+		}
+	}
+	
+	
 	
 	private void drawPauseScreen() {
-		graphics2d.setFont(ARIAL_80B);
+		graphics2d.setFont(graphics2d.getFont().deriveFont(Font.PLAIN, 80F));
 		String text = "PAUSED";
 		int x = getCenterText_X(text);
 		int y = GamePanel.SCREEN_HEIGHT/2;
@@ -73,12 +155,12 @@ public class UI {
 		int height = GamePanel.TILESIZE*4;
 		drawSubWindow(x, y, width, height);
 		
-		graphics2d.setFont(ARIAL_32);
+		graphics2d.setFont(graphics2d.getFont().deriveFont(Font.PLAIN, 32F));
 		Color color = new Color(255, 255, 255);
 		x += GamePanel.TILESIZE;
 		y += GamePanel.TILESIZE;
 		graphics2d.setColor(color);
-		for(String line : currentDialogue.split("\\n")) {
+		for(String line : currentDialogue.split("\n")) {
 			graphics2d.drawString(line, x, y);
 			y += GamePanel.TILESIZE;
 		}

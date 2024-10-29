@@ -21,7 +21,7 @@ public class NPC_Noob extends NPC{
 	public void setDefaultDialogues() {
 		dialogues[0] = "Hello, world!";
 		dialogues[1] = "I'm noob nice to meet you!";
-		dialogues[2] = "Time to start our adventure together, \\nI'm here to help you!";
+		dialogues[2] = "Time to start our adventure \ntogether, I'm here to help you!";
 	}
 	
 	public void speak() {

@@ -72,8 +72,10 @@ public class Player extends Entity {
 			int npc_index = gamePanel.getCollision_checker().checkEntity(this, gamePanel.getNPC());
 			interactNPC(npc_index);
 			
-			if(collision_on == false) {
-				switch (direction) {
+			if(collision_on == false) 
+			{
+				switch (direction) 
+				{
 					case 0: {
 						world_y += speed;
 						speed_current = speed;

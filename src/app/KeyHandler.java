@@ -32,6 +32,33 @@ public class KeyHandler implements KeyListener{
 		int key = e.getKeyCode();
 		switch (gamePanel.getGame_state()) 
 		{
+			case TITLE: 
+			{
+				if(key == KeyEvent.VK_W) {
+					gamePanel.getGameUI().decreaseCommand_number();
+				}
+				if(key == KeyEvent.VK_S) {
+					gamePanel.getGameUI().addCommand_number();
+				}
+				if(key == KeyEvent.VK_ENTER) {
+					switch (gamePanel.getGameUI().getCommand_number()) 
+					{
+						case 0: {
+							gamePanel.setGame_state(GameState.PLAY);
+							gamePanel.playMusic(0);
+							break;
+						}
+						case 1: {
+							//TODO
+							break;
+						}
+						case 2: {
+							System.exit(0);
+							break;
+						}
+					}
+				}
+			}
 			case PLAY: 
 			{
 				if(key == KeyEvent.VK_W) {
@@ -67,7 +94,8 @@ public class KeyHandler implements KeyListener{
 				}
 				break;
 			}
-			case PAUSE: {
+			case PAUSE: 
+			{
 				if(key == KeyEvent.VK_ESCAPE) 
 				{
 					switch (gamePanel.getGame_state()) 
@@ -87,7 +115,8 @@ public class KeyHandler implements KeyListener{
 					}
 				}
 			}
-			case DIALOGUE: {
+			case DIALOGUE: 
+			{
 				if(key == KeyEvent.VK_ENTER) {
 					gamePanel.setGame_state(GameState.PLAY);
 				}
